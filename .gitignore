@@ -1,0 +1,21 @@
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Configuration and secrets
+config.json
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Temporary outputs
+output*.json
+
+# OS and IDE files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

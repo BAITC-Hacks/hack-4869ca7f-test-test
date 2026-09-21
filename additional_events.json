@@ -1,0 +1,20 @@
+{"event": "out of memory error", "level": "critical"}
+{"event": "periodic backup completed", "level": "info"}
+{"event": "ssl certificate expiring in 5 days", "level": "warn"}
+{"event": "redis connection refused", "level": "critical"}
+{"event": "new student registered", "level": "info"}
+{"event": "high disk i/o wait", "level": "warn"}
+{"event": "primary database replica out of sync", "level": "critical"}
+{"event": "scheduled cron job executed successfully", "level": "info"}
+{"event": "rate limit threshold reached for ip", "level": "warn"}
+{"event": "unauthorized access attempt detected", "level": "critical"}
+{"event": "worker node healthy", "level": "info"}
+{"event": "response time elevated (>800ms)", "level": "warn"}
+{"event": "api gateway 502 bad gateway", "level": "critical"}
+{"event": "user changed password", "level": "info"}
+{"event": "queue backlog exceeded 1000 items", "level": "warn"}
+{"event": "kernel panic on host-03", "level": "critical"}
+{"event": "dns resolution latency spike", "level": "warn"}
+{"event": "daily analytics report generated", "level": "info"}
+{"event": "payment gateway webhook timeout", "level": "critical"}
+{"event": "session cookie refreshed", "level": "info"}
