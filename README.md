@@ -1,41 +1,35 @@
-# Inquiry Classifier & Response Drafter (Case 1)
+# Hackathon Prototype Solutions
 
-A lightweight CLI tool built for the hackathon rehearsal to automatically process incoming customer and student inquiries, classify them into predefined categories, and draft initial polite responses in Russian using Google's Gemini models.
+A collection of lightweight Python automation tools built for hackathon evaluation:
+- **Case 1**: Inquiry classification and Russian response drafting via Gemini API.
+- **Case 2**: Operational event noise filtering using standard Python libraries.
 
-## Features
+## Case 1: Inquiry Classifier & Response Drafter
 
-- **Automated Classification**: Categorizes each inquiry into strictly one of three categories:
-  - `справка` (Inquiry / Information request)
-  - `жалоба` (Complaint / Service issue)
-  - `другое` (Other / Miscellaneous)
-- **Draft Generation**: Automatically drafts a polite, concise, and constructive Russian response for each inquiry.
-- **Batch Processing**: Sends all inquiries in a single API call with a structured JSON schema to optimize execution speed and preserve free-tier quotas.
-- **Secure Secrets Management**: Reads the Gemini API key directly from `config.json` without extra third-party dotenv dependencies; `config.json` is strictly excluded from version control via `.gitignore`.
-- **Flexible CLI**: Powered by `argparse`, supporting custom input files, alternative configuration paths, and optional pretty-printed JSON formatting.
+A CLI tool to automatically classify customer/student inquiries into predefined categories and draft polite Russian responses using Gemini models.
 
----
+### Features
+- **Automated Classification**: Categorizes inquiries strictly into `справка`, `жалоба`, or `другое`.
+- **Draft Generation**: Automatically generates a polite, constructive response in Russian.
+- **Batch Processing**: Sends all inquiries in a single API call with structured JSON schema.
+- **Secure Configuration**: Reads API keys from `config.json` (git-ignored, template in `config.example.json`).
+- **Flexible CLI**: Supports custom files, config paths, and compact or pretty-printed JSON.
 
-## Dependencies & Technology Stack
-
+### Dependencies & Tech Stack
 - **Python**: 3.10+ (tested on Python 3.14)
-- **Root Package**: `google-genai` (official Google GenAI SDK for Gemini models)
-- **Pinned Dependencies**: See [`requirements.txt`](file:///requirements.txt) for exact frozen versions (`pip freeze`).
+- **Root Package**: `google-genai`
+- **Pinned Versions**: See `requirements.txt` (`pip freeze`)
 
----
+### Setup & Installation
 
-## Setup & Installation
-
-### 1. Create and Activate a Virtual Environment
-
+#### 1. Create and Activate Virtual Environment
 ```bash
 # Windows (PowerShell)
 python -m venv venv
-
-# If PowerShell blocks script execution, enable it for current session:
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 .\venv\Scripts\Activate.ps1
 
-# Or in Windows Command Prompt (cmd):
+# Or in Windows CMD:
 # .\venv\Scripts\activate.bat
 
 # Linux / macOS
@@ -43,13 +37,9 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-> **Tip (Windows)**: You can also run the script directly using the environment's Python binary without activating:
-> ```powershell
-> .\venv\Scripts\python classifier.py --pretty
-> ```
+> **Tip (Windows)**: You can run directly without activating: `.\venv\Scripts\python classifier.py --pretty`
 
-### 2. Install Pinned Dependencies
-
+#### 2. Install Dependencies
 ```bash
 # With venv activated:
 pip install -r requirements.txt
@@ -58,19 +48,13 @@ pip install -r requirements.txt
 .\venv\Scripts\pip install -r requirements.txt
 ```
 
-### 3. Configure API Key
-
-1. Copy the sample configuration file:
+#### 3. Configure API Key
+1. Copy the sample config:
    ```bash
-   # Windows
-   copy config.example.json config.json
-
-   # Linux / macOS
-   cp config.example.json config.json
+   copy config.example.json config.json   # Windows
+   cp config.example.json config.json     # Linux / macOS
    ```
-
-2. Obtain a free API key from [Google AI Studio](https://aistudio.google.com/).
-3. Open `config.json` and replace `YOUR_GEMINI_API_KEY_HERE` with your key:
+2. Put your Google AI Studio API key into `config.json`:
    ```json
    {
      "gemini_api_key": "AIzaSy...",
@@ -79,30 +63,20 @@ pip install -r requirements.txt
    ```
    *(Note: `gemini-3.6-flash` is eligible for Google AI Studio's free tier).*
 
----
+### Usage
 
-## Usage
-
-### Run on Default Inquiries (`messages.txt`)
-
-By default, the script reads `messages.txt` and outputs compact JSON to `stdout`:
-
+#### Default Run (`messages.txt`)
+Outputs compact JSON to `stdout`:
 ```bash
 python classifier.py
 ```
 
-### Pretty-Print JSON Output
-
-To display indented, human-readable JSON output:
-
+#### Pretty-Printed JSON Output
 ```bash
 python classifier.py --pretty
 ```
 
-### Run on Extended Test Cases (20 Inquiries)
-
-We provide an extended set of 20 realistic test inquiries in `additional_messages.txt`:
-
+#### Extended Test Cases (20 Inquiries)
 ```bash
 python classifier.py --file additional_messages.txt --pretty
 ```
@@ -111,15 +85,13 @@ python classifier.py --file additional_messages.txt --pretty
 
 | Flag | Short | Default | Description |
 |---|---|---|---|
-| `--file` | `-f` | `messages.txt` | Path to the text file containing messages (one per line) |
-| `--config` | `-c` | `config.json` | Path to JSON config file containing the API key |
+| `--file` | `-f` | `messages.txt` | Path to text file with inquiries (one per line) |
+| `--config` | `-c` | `config.json` | Path to JSON config file with API key |
 | `--pretty` | `-p` | `False` | Pretty-print output JSON with 2-space indentation |
 
----
+### Sample Output
 
-## Sample Output
-
-When executing `python classifier.py --pretty`, the script produces structured JSON:
+Running `python classifier.py --pretty`:
 
 ```json
 [
@@ -156,43 +128,31 @@ When executing `python classifier.py --pretty`, the script produces structured J
 ]
 ```
 
----
+## Case 2: Alert Filter
 
-# Alert Filter (Case 2)
+A zero-dependency Python script to filter operational event streams, eliminate noise (`info`, `warn`), and isolate critical events with an aggregated summary count.
 
-A lightweight, zero-dependency Python script to filter operational event streams, eliminate background noise (`info`, `warn`), and isolate critical events with an aggregated summary count.
+### Features
+- **Noise Filtering**: Extracts events matching target severity (default: `critical`).
+- **Standard Library Only**: Pure Python (`json`, `argparse`, `sys`) — no external packages, APIs, or AI models.
+- **NDJSON Support**: Reads line-delimited JSON (`events.json`), with fallback for standard JSON arrays.
+- **CLI Options**: Configurable file path (`--file`) and severity level (`--level`).
+- **Cross-Platform UTF-8**: Automatically reconfigures stdout encoding for Windows console compatibility.
 
-## Features
+### Usage
 
-- **Noise Filtering**: Scans events and extracts only those matching the target severity (default: `critical`).
-- **Standard Library Only**: Pure Python (`json`, `argparse`, `sys`) — no external packages, APIs, or AI models required.
-- **NDJSON Support**: Reads line-delimited JSON (`events.json`), with fallback support for standard JSON arrays.
-- **CLI Options**: Configurable input file path (`--file`) and severity level (`--level`).
-- **Cross-Platform UTF-8**: Automatically handles terminal character encoding to display Cyrillic summary text (`критичных N`) correctly on Windows and Unix systems.
-
----
-
-## Usage
-
-### Run on Default Events (`events.json`)
-
+#### Default Run (`events.json`)
 ```bash
 python filter_alerts.py
 ```
 *(Or on Windows without activating venv: `.\venv\Scripts\python filter_alerts.py`)*
 
-### Run on Extended Test Cases (20 Events)
-
-We provide an extended set of 20 realistic operational events in `additional_events.json`:
-
+#### Extended Test Cases (20 Events)
 ```bash
 python filter_alerts.py --file additional_events.json
 ```
 
-### Filter by Other Severity Levels
-
-You can filter for other levels such as `warn` or `info`:
-
+#### Filter by Other Severity Levels
 ```bash
 python filter_alerts.py --level warn
 ```
@@ -204,11 +164,9 @@ python filter_alerts.py --level warn
 | `--file` | `-f` | `events.json` | Path to event file (NDJSON format) |
 | `--level` | `-l` | `critical` | Severity level to filter (case-insensitive) |
 
----
+### Sample Output
 
-## Sample Output
-
-When executing `python filter_alerts.py`:
+Running `python filter_alerts.py`:
 
 ```
 {"event": "disk 90%", "level": "critical"}
@@ -216,4 +174,3 @@ When executing `python filter_alerts.py`:
 {"event": "db timeout", "level": "critical"}
 критичных 3
 ```
-
